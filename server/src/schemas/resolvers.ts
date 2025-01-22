@@ -1,4 +1,4 @@
-import { User } from '../models/index.js';
+import { User, BookDocument } from '../models/index.js';
 import { signToken, AuthenticationError } from '../services/auth.js';
 
 interface User {
@@ -7,7 +7,7 @@ interface User {
   email: string;
   password: string;
   bookCount: Number;
-  savedBooks: [];
+  savedBooks: BookDocument[];
   //might need to edit aboved saveBooks array as Book Type XXXXXXXXX
 }
 
