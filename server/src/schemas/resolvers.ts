@@ -1,5 +1,7 @@
-import { User, BookDocument } from '../models/index.js';
+import { User } from '../models/index.js';
 import { signToken, AuthenticationError } from '../services/auth.js';
+import type { BookDocument } from '../models/Book.js';
+
 
 interface User {
   _id: string;
@@ -8,7 +10,6 @@ interface User {
   password: string;
   bookCount: Number;
   savedBooks: BookDocument[];
-  //might need to edit aboved saveBooks array as Book Type XXXXXXXXX
 }
 
 // interface UserArgs {
@@ -24,18 +25,19 @@ interface AddUserArgs {
 }
 
 interface SaveBookArgs {
-  userId: string;
-  authors: string[];
-  description: string;
-  title: string;
-  image: string;
-  link: string;
+  input:{
+    bookId: string;
+    authors: string[];
+    description: string;
+    title: string;
+    image: string;
+    link: string;
+  }
 }
 
-interface RemoveBookArgs {
-  userId: string;
-  title: string;
-}
+// interface RemoveBookArgs {
+//   bookId: string;
+// }
 
 interface Context {
   user?: User;
@@ -43,13 +45,6 @@ interface Context {
 
 const resolvers = {
   Query: {
-    // profiles: async (): Promise<Profile[]> => {
-    //   return await Profile.find();
-    // },
-    // profile: async (_parent: any, { profileId }: ProfileArgs): Promise<Profile | null> => {
-    //   return await Profile.findOne({ _id: profileId });
-    // },
-    
     me: async (_parent: any, _args: any, context: Context): Promise<User | null> => {
       if (context.user) {
         return await User.findOne({ _id: context.user._id });
@@ -75,12 +70,12 @@ const resolvers = {
         const token = signToken(user.username, user.email, user._id);
         return { token, user };
       },
-    saveBook: async (_parent: any, { userId, authors, description, title, image, link }: SaveBookArgs, context: Context): Promise<User | null> => {
+    saveBook: async (_parent: any, { input }: SaveBookArgs, context: Context): Promise<User | null> => {
       if (context.user) {
         return await User.findOneAndUpdate(
-          { _id: userId },
+          { _id: context.user._id },
           {
-            $addToSet: { books: authors, description, title, image, link },
+            $addToSet: { savedBooks: input },
           },
           {
             new: true,
@@ -90,11 +85,13 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
-    removeBook: async (_parent: any, { title }: RemoveBookArgs, context: Context): Promise<User | null> => {
+    removeBook: async (_parent: any, { bookId } : { bookId: string }, context: Context): Promise<User | null> => {
       if (context.user) {
+        console.log('bId', bookId)
+        console.log('context', context.user)
         return await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { books: title } },
+          { $pull: { savedBooks: { bookId } } },
           { new: true }
         );
       }

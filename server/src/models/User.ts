@@ -65,4 +65,4 @@ userSchema.virtual('bookCount').get(function () {
 
 const User = model<UserDocument>('User', userSchema);
 
-export { User };
+export default User;
