@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { createUser } from '../utils/API'; //this
+// import { createUser } from '../utils/API'; //this
 import Auth from '../utils/auth';
 import type { User } from '../models/User';
 
@@ -12,7 +12,7 @@ import { ADD_USER } from '../utils/mutations'
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
 const SignupForm = ({}: { handleModalClose: () => void }) => {
   // set initial form state
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: ''});
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
@@ -35,12 +35,14 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
       event.stopPropagation();
     }
 
+    console.log('Submitting form data:', userFormData);
+    
     try {
-      // const response = await createUser(userFormData);
       const { data } = await addUser({
-        variables: { input: { ...userFormData } },
+        variables: { ...userFormData }
       });
-
+      console.log('response', data)
+      
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
