@@ -18,7 +18,7 @@ const startApolloServer = async () => {
   await server.start();
 
   const corsOptions = {
-    origin: 'http://localhost:3000', // Allow requests from the React frontend
+    origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000', // Allow requests from the React frontend
     credentials: true, // Include credentials like cookies or headers
   };
 
