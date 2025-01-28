@@ -14,6 +14,7 @@ const bookSchema = new Schema<BookDocument>({
   authors: [
     {
       type: String,
+      required: true,
     },
   ],
   description: {

@@ -25,7 +25,7 @@ interface User {
 // }
 
 interface SaveBookArgs {
-  input:{
+  bookData:{
     bookId: string;
     authors: string[];
     description: string;
@@ -70,32 +70,32 @@ const resolvers = {
         const token = signToken(user.username, user.email, user._id);
         return { token, user };
       },
-    saveBook: async (_parent: any, { input }: SaveBookArgs, context: Context): Promise<User | null> => {
+    saveBook: async (_parent: any, { bookData }: SaveBookArgs, context: Context): Promise<User | null> => {
       if (context.user) {
         return await User.findOneAndUpdate(
           { _id: context.user._id },
           {
-            $addToSet: { savedBooks: input },
+            $addToSet: { savedBooks: bookData },
           },
           {
             new: true,
             runValidators: true,
           }
-        );
+        );   
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('Could not find user');
     },
     removeBook: async (_parent: any, { bookId } : { bookId: string }, context: Context): Promise<User | null> => {
-      if (context.user) {
+      if (!context.user) {
+        throw new AuthenticationError('User not authenticated');
+      }
         console.log('bId', bookId)
         console.log('context', context.user)
-        return await User.findOneAndUpdate(
+      return await User.findOneAndUpdate(
           { _id: context.user._id },
           { $pull: { savedBooks: { bookId } } },
           { new: true }
         );
-      }
-      throw AuthenticationError;
     },
   },
 };
