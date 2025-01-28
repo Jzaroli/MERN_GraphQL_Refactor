@@ -3,15 +3,21 @@ import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
-import { loginUser } from '../utils/API';
+// import { loginUser } from '../utils/API';
 import Auth from '../utils/auth';
 import type { User } from '../models/User';
 
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
+
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
 const LoginForm = ({}: { handleModalClose: () => void }) => {
-  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: '', savedBooks: [] });
+  const [userFormData, setUserFormData] = useState<User>({ username: '', email: '', password: ''});
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+
+ // Mutation for loging in
+ const [loginUser, { error }] = useMutation(LOGIN_USER);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -28,15 +34,22 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
       event.stopPropagation();
     }
 
+    console.log('Submitting login form data:', userFormData);
+
     try {
-      const response = await loginUser(userFormData);
+      // const response = await loginUser(userFormData);
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
+      // if (!response.ok) {
+      //   throw new Error('something went wrong!');
+      // }
+      const { data } = await loginUser({
+        variables: { email: userFormData.email, password: userFormData.password }
+      });
 
-      const { token } = await response.json();
-      Auth.login(token);
+      console.log('this is the data', data)
+
+      Auth.login(data.login.token);
+      
     } catch (err) {
       console.error(err);
       setShowAlert(true);
@@ -87,6 +100,11 @@ const LoginForm = ({}: { handleModalClose: () => void }) => {
           variant='success'>
           Submit
         </Button>
+        {error && (
+          <div className="my-3 p-3 bg-danger text-white">
+            {error.message}
+          </div>
+        )}
       </Form>
     </>
   );

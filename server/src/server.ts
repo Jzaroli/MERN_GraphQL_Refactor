@@ -2,7 +2,8 @@ import express from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import path from 'path';
-
+import cors from 'cors';
+import { authenticateToken } from './services/auth.js';
 import { typeDefs, resolvers } from './schemas/index.js';
 import db from './config/connection.js';
 
@@ -15,11 +16,22 @@ const server = new ApolloServer({
 
 const startApolloServer = async () => {
   await server.start();
+
+  const corsOptions = {
+    origin: 'http://localhost:3000', // Allow requests from the React frontend
+    credentials: true, // Include credentials like cookies or headers
+  };
+
+  app.use(cors(corsOptions)); // Apply CORS middleware
   
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   
-  app.use('/graphql', expressMiddleware(server));
+  app.use('/graphql', expressMiddleware(server as any,
+    {
+      context: authenticateToken as any
+    }
+  ));
 
   // if we're in production, serve client/dist as static assets
   if (process.env.NODE_ENV === 'production') {

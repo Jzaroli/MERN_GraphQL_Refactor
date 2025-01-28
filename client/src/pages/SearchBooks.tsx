@@ -59,6 +59,7 @@ const SearchBooks = () => {
         title: book.volumeInfo.title,
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
+        link: book.volumeInfo.infoLink || '',
       }));
 
       setSearchedBooks(bookData);
@@ -72,6 +73,7 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId: string) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave: Book = searchedBooks.find((book) => book.bookId === bookId)!;
+    console.log('book to save', bookToSave);
 
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -82,7 +84,7 @@ const SearchBooks = () => {
 
     try {
       await saveBook({
-        variables: { bookData: { ...bookToSave } },
+        variables: { bookData: bookToSave },
       });
 
       // if book successfully saves to user's account, save book id to state

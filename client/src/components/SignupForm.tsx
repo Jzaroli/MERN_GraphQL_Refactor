@@ -7,7 +7,7 @@ import Auth from '../utils/auth';
 import type { User } from '../models/User';
 
 import { useMutation } from '@apollo/client';
-import { ADD_USER } from '../utils/mutations'
+import { ADD_USER } from '../utils/mutations';
 
 // biome-ignore lint/correctness/noEmptyPattern: <explanation>
 const SignupForm = ({}: { handleModalClose: () => void }) => {
@@ -18,6 +18,7 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
+  // Mutation for signing up
   const [addUser, { error }] = useMutation(ADD_USER);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -35,13 +36,14 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
       event.stopPropagation();
     }
 
-    console.log('Submitting form data:', userFormData);
+    // console.log('Submitting form data:', userFormData);
     
     try {
       const { data } = await addUser({
         variables: { ...userFormData }
       });
-      console.log('response', data)
+      
+      // console.log('response', data)
       
       Auth.login(data.addUser.token);
     } catch (err) {
@@ -111,10 +113,10 @@ const SignupForm = ({}: { handleModalClose: () => void }) => {
           Submit
         </Button>
         {error && (
-              <div className="my-3 p-3 bg-danger text-white">
-                {error.message}
-              </div>
-            )}
+          <div className="my-3 p-3 bg-danger text-white">
+            {error.message}
+          </div>
+        )}
       </Form>
     </>
   );
