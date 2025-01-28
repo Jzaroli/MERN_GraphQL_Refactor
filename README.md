@@ -1,6 +1,6 @@
 # MERN_GraphQL_Refactor
 ## Description
-The functionality hasn't changed on this app, but the implemetnation has. Using GraphQL you can now sign up, login, and review books using the Google books API. You can then save them and delete them from the database. The task at hands was simply to refactor the code to use GraphQL. Fun stuff!
+The functionality hasn't changed on this app, but the implemetnation has. Using GraphQL you can now sign up, login, and review books using the Google books API. You can then save them and delete them from your profile. The exercise was simply to refactor the codebase to use GraphQL. Fun stuff!
 
 ## Usage
 You can access the app at the following link: https://mern-graphql-refactor.onrender.com/
