@@ -3,7 +3,7 @@
 The functionality hasn't changed on this app, but the implemetnation has. Using GraphQL you can now sign up, login, and review books using the Google books API. You can then save them and delete them from your profile. The exercise was simply to refactor the codebase to use GraphQL. Fun stuff!
 
 ## Usage
-You can access the app at the following link: https://mern-graphql-refactor.onrender.com/
+You can access the app at the following link: https://mern-graphql-refactor.onrender.com/  
 Give it 60seconds to boot up and then sign up as a new user.
 
 ## Credits & How to Contribute
