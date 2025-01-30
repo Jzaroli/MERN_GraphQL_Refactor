@@ -89,8 +89,6 @@ const resolvers = {
       if (!context.user) {
         throw new AuthenticationError('User not authenticated');
       }
-        console.log('bId', bookId)
-        console.log('context', context.user)
       return await User.findOneAndUpdate(
           { _id: context.user._id },
           { $pull: { savedBooks: { bookId } } },
