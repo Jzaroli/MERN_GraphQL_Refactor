@@ -25,7 +25,8 @@ const bookSchema = new Schema<BookDocument>({
   bookId: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    sparse: true
   },
   image: {
     type: String,
